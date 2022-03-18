@@ -1,0 +1,72 @@
+import java.util.Hashtable;
+
+public class UnsignedInt extends Number{
+	int number;
+	int bit;
+	Hashtable<Integer, String> hexaNums;
+	
+	public UnsignedInt(String numberRepresentation, String byteOrdering) {
+		this.bit = 16;
+		this.hexaNums = new Hashtable<Integer, String>();
+		this.putDict();
+		this.setNumberRepresentation(numberRepresentation.substring(0, numberRepresentation.length() - 1));
+		this.setByteOrdering(byteOrdering);
+		this.number = Integer.valueOf(this.getNumberRepresentation());
+		this.convertToBinary();
+		this.convertToHexa();
+		this.createFinalHexa();
+	}
+	
+	public void putDict() {
+		for(int i = 0; i < 16; i++) {
+			switch(i) {
+				case 10:
+					this.hexaNums.put(i, "A");
+					break;
+				case 11:
+					this.hexaNums.put(i, "B");
+					break;
+				case 12:
+					this.hexaNums.put(i, "C");
+					break;
+				case 13:
+					this.hexaNums.put(i, "D");
+					break;
+				case 14:
+					this.hexaNums.put(i, "E");
+					break;
+				case 15:
+					this.hexaNums.put(i, "F");
+					break;
+				default:
+					this.hexaNums.put(i, String.valueOf(i));
+					break;
+			}
+		}
+	}
+	
+	public void convertToBinary() {
+		int num = this.number;
+		while(num != 0) {	
+			this.setBinaryRepresentation(String.valueOf(num % 2) + this.getBinaryRepresentation());
+			num = num / 2;
+		}
+		int length = this.getBinaryRepresentation().length();
+		for(int i = 0; i < this.bit - length; i++) {
+			this.setBinaryRepresentation("0" + this.getBinaryRepresentation());
+		}
+	}
+	
+	public void convertToHexa() {
+		String binary = this.getBinaryRepresentation();
+		String fourBit = "";
+		int length = binary.length();
+		for(int i = 0; i < length; i++) {
+			fourBit = binary.charAt(i) + fourBit;
+			if((i + 1) % 4 == 0) {
+				this.setHexaRepresentation(this.getHexaRepresentation() + this.hexaNums.get(this.findFourBit(fourBit)));
+				fourBit = "";
+			}
+		}
+	}
+}
